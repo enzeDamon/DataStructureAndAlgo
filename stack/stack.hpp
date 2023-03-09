@@ -1,7 +1,8 @@
 
 #pragma once
 #include <assert.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 template<class T>
 #define INITSIZE (20) 
 class stack
@@ -15,8 +16,9 @@ public:
     T& pop();
     int currentSizeLimit;
     int pointerPosition;
-private:
     T *holder;
+private:
+
 
     
 };
@@ -32,27 +34,28 @@ stack<T>::~stack()
 {
     if (holder != nullptr) {
         delete[] holder;
+        holder = nullptr;
     }
 
 }
-
+#include <iostream>
 template<class T>
-stack<T>::stack(const stack& other) 
+stack<T>::stack(const stack<T>& other) 
 {   
     currentSizeLimit = other.currentSizeLimit;
-    holder = new T[currentSizeLimit];
     pointerPosition = other.pointerPosition;
-    memcpy(holder, other.holder, pointerPosition * sizeof(T));
+    holder = new T[currentSizeLimit];
+    std::memcpy(holder, other.holder, pointerPosition * sizeof(T));
 }
 
 template<class T>
-stack<T>& stack<T>::operator=(const stack& other) 
+stack<T>& stack<T>::operator=(const stack<T>& other) 
 {   
     if (holder) delete[] holder;
     currentSizeLimit = other.currentSizeLimit;
     holder = new T[currentSizeLimit];
     pointerPosition = other.pointerPosition;
-    memcpy(holder, other.holder, pointerPosition * sizeof(T));
+    std::memcpy(holder, other.holder, pointerPosition * sizeof(T));
     return *this;
 }
 
@@ -64,7 +67,7 @@ void stack<T>::push(const T &ele)
     if (pointerPosition == currentSizeLimit)
     {
         currentSizeLimit *= 2;
-        T* temp = reinterpret_cast<T*>(realloc(holder, currentSizeLimit));
+        T* temp = reinterpret_cast<T*>(std::realloc(holder, sizeof(T)*currentSizeLimit));
         holder = temp;
     }
     holder[pointerPosition++] = ele;
